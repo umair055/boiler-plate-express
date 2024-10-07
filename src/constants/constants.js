@@ -8,7 +8,17 @@ const CONSTANTS = {
     MEMBER: 'Member',
   },
   InviteStatus: { PENDING: 'pending', APPROVED: 'approved' },
-  UserStatus: { ACTIVE: 'active', PENDING: 'pending', DELETED: 'deleted' }
+  UserStatus: { ACTIVE: 'active', PENDING: 'pending', DELETED: 'deleted' },
+  DEFAULT_PERMISSIONS: { create: false, read: false, update: false, delete: false },
+  PERMISSIONS: {
+    USERS: 'userPermissions',
+    ROLES: 'rolePermissions',
+  },
+  PermissionLevel: {
+    FULL_ACCESS: 'full',
+    PARTIAL: 'partial',
+    VIEW: 'view',
+  }
 }
 
 module.exports = CONSTANTS

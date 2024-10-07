@@ -5,11 +5,11 @@ const bcrypt = require("bcrypt");
 const { sendEmail } = require('../../../shared/services/mailer.service.js')
 const { generateInviteEmail } = require('../../../shared/templates/templates.js')
 const inviteService = require('../../invites/services/invites.service.js')
+const permissionsService = require('../../permissions/services/permissions.service.js')
 
-
-const findById = (id) => {
+const findById = async (id) => {
   try {
-    return sequelize.models.users.findOne({
+    const user = await sequelize.models.users.findOne({
       where: {
         id: id,
         status: {
@@ -19,10 +19,14 @@ const findById = (id) => {
       include: [
         {
           model: sequelize.models.roles,
+          include: { model: sequelize.models.permissions },
           through: sequelize.models.userRoles,
         },
       ]
     })
+    user.dataValues['permissions'] = permissionsService.mergeRolePermissions(user.roles)
+    delete user.dataValues.password
+    return user
   }
   catch (error) {
     console.error(`Error in findById of user service where id: ${id}`)
@@ -56,6 +60,7 @@ const findByEmailForLogin = async (req, res, next) => {
       include: [
         {
           model: sequelize.models.roles,
+          include: { model: sequelize.models.permissions },
           through: sequelize.models.userRoles,
         },
       ]
